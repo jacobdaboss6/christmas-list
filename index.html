@@ -86,7 +86,10 @@
       font-size: 0.92rem;
     }
     footer { margin-top: 2rem; text-align: center; color: rgba(183,196,186,0.7); font-size: 0.8rem; }
-    .tag { display:inline-block; font-size:.75rem; font-weight:600; padding:.15rem .55rem; border-radius:999px; background:#eef3ea; color:#2f5d2f; margin-bottom:.4rem; }
+    .opt-toggle { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; margin: 0 0 1rem; background: #102018; font-family: system-ui, -apple-system, sans-serif; }
+    .opt-toggle button { background: transparent; color: var(--muted); border: 0; border-radius: 999px; padding: 0.45rem 0.9rem; font: inherit; font-size: 0.85rem; cursor: pointer; }
+    .opt-toggle button[aria-pressed="true"] { background: var(--gold); color: #102018; font-weight: 600; }
+    .opt-toggle button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
   </style>
 </head>
 <body>
@@ -163,38 +166,6 @@
     </article>
 
     <article class="card" style="margin-top:1.5rem;">
-      <img class="shot" alt="HOZO NeoSander Reciprocating Detail Sander" src="images/neosander.jpg" />
-      <div class="body">
-        <span class="tag">Nice option</span>
-        <p class="brand">HOZO Design</p>
-        <h2>NeoSander Reciprocating Detail Sander</h2>
-        <p class="meta">Pen sander made for 3D prints.</p>
-        <div class="row" style="margin-bottom: 1.1rem;">
-          <div>
-            <div class="price">$69.99</div>
-          </div>
-          <a class="buy" href="https://www.amazon.com/dp/B0GY7X66J6" target="_blank" rel="noopener">Buy this gift</a>
-        </div>
-      </div>
-    </article>
-
-    <article class="card" style="margin-top:1.5rem;">
-      <img class="shot" alt="WEN 6307 Variable Speed Detailing File Sander" src="images/wen-6307.jpg" />
-      <div class="body">
-        <span class="tag">Cheaper option</span>
-        <p class="brand">WEN</p>
-        <h2>6307 Variable Speed Detailing File Sander</h2>
-        <p class="meta">Mini belt sander for edges and tight spots.</p>
-        <div class="row" style="margin-bottom: 1.1rem;">
-          <div>
-            <div class="price">$28.10</div>
-          </div>
-          <a class="buy" href="https://www.amazon.com/dp/B072Q2FTLY" target="_blank" rel="noopener">Buy this gift</a>
-        </div>
-      </div>
-    </article>
-
-    <article class="card" style="margin-top:1.5rem;">
       <img class="shot" alt="SL.OW Coffee Roasters Orange Sunset Colombian Decaf" src="images/orange-sunset.jpg" />
       <div class="body">
         <p class="brand">SL.OW Coffee Roasters</p>
@@ -227,19 +198,67 @@
       </div>
     </article>
 
-
-    <article class="card" style="margin-top:1.5rem;">
-      <img class="shot" alt="HOZO Hobby Knife" src="images/hozo.jpg" />
+    <article class="card" style="margin-top:1.5rem;" id="sunshade-card">
+      <img class="shot" alt="WeatherTech SunShade windshield sun shade" src="images/weathertech-sunshade.jpg" />
       <div class="body">
-        <p class="brand">HOZO Design</p>
-        <h2>HOZO Hobby Knife</h2>
-        <p class="meta">One-press blade swaps, and the case unfolds into a cutting mat with magnetic blade storage.</p>
+        <p class="brand">WeatherTech</p>
+        <div class="opt-toggle" role="group" aria-label="Choose SunShade option">
+          <button type="button" data-opt="windshield" aria-pressed="true">Windshield only · cheaper option</button>
+          <button type="button" data-opt="kit" aria-pressed="false">Full vehicle kit · nice option</button>
+        </div>
+        <div aria-live="polite">
+          <h2 data-field="title">SunShade TS1404 · Front Windshield</h2>
+          <p class="meta" data-field="desc">Custom-fit reflective sun shade for the front windshield. Keeps the cab cooler and protects the dash.</p>
+        </div>
+        <p class="meta">Fit: 2024 Toyota Tundra SR5 CrewMax. Not for trucks with Toyota&rsquo;s factory dashcam.</p>
         <div class="row" style="margin-bottom: 1.1rem;">
           <div>
-            <div class="price">from $59</div>
-            <div class="stars">Kickstarter · launched Oct 13, 2026</div>
+            <div class="price" data-field="price">$73.95</div>
+            <div class="stars" data-field="label">Cheaper option</div>
           </div>
-          <a class="buy" href="https://www.kickstarter.com/projects/hozodesign/hozo-hobby-knife" target="_blank" rel="noopener">Buy this gift</a>
+          <a class="buy" data-field="buy" href="https://www.sharptruck.com/weathertech-ts1404" target="_blank" rel="noopener">Buy this gift</a>
+        </div>
+      </div>
+    </article>
+    <script>
+      (function () {
+        var card = document.getElementById('sunshade-card');
+        if (!card) return;
+        var opts = {
+          windshield: { title: 'SunShade TS1404 \u00b7 Front Windshield', desc: 'Custom-fit reflective sun shade for the front windshield. Keeps the cab cooler and protects the dash.', price: '$73.95', label: 'Cheaper option', buy: 'https://www.sharptruck.com/weathertech-ts1404' },
+          kit: { title: 'SunShade TS1404K2 \u00b7 Full Vehicle Kit', desc: 'Complete set for the CrewMax with split rear window: windshield, side windows and rear window shades.', price: '$189.95', label: 'Nice option', buy: 'https://www.extremeterrain.com/weathertech-tundra-techshade-full-vehicle-kit-ts1404k2.html' }
+        };
+        var f = function (n) { return card.querySelector('[data-field="' + n + '"]'); };
+        var buttons = card.querySelectorAll('.opt-toggle button');
+        Array.prototype.forEach.call(buttons, function (btn) {
+          btn.addEventListener('click', function () {
+            var o = opts[btn.getAttribute('data-opt')];
+            Array.prototype.forEach.call(buttons, function (b) { b.setAttribute('aria-pressed', String(b === btn)); });
+            f('title').textContent = o.title;
+            f('desc').textContent = o.desc;
+            f('price').textContent = o.price;
+            f('label').textContent = o.label;
+            f('buy').href = o.buy;
+          });
+        });
+      })();
+    </script>
+
+    <article class="card" style="margin-top:1.5rem;" id="amazon-gift-card">
+      <div class="shot" role="img" aria-label="Amazon gift card" style="display:flex;align-items:center;justify-content:center;flex-direction:column;background:linear-gradient(135deg,#232f3e,#37475a);color:#fff;min-height:200px;font-family:inherit;">
+        <div style="font-size:2rem;font-weight:700;letter-spacing:.02em;">amazon</div>
+        <div style="width:5rem;height:4px;background:#ff9900;border-radius:0 0 50% 50%;margin:.2rem 0 .6rem;"></div>
+        <div style="font-size:1rem;opacity:.9;">Gift Card</div>
+      </div>
+      <div class="body">
+        <p class="brand">Amazon</p>
+        <h2>Amazon Gift Card</h2>
+        <p class="meta">Any amount. eGift card delivered by email.</p>
+        <div class="row" style="margin-bottom: 1.1rem;">
+          <div>
+            <div class="price">Any amount</div>
+          </div>
+          <a class="buy" href="https://www.amazon.com/gift-cards/b?ie=UTF8&amp;node=2238192011" target="_blank" rel="noopener">Buy this gift</a>
         </div>
       </div>
     </article>
